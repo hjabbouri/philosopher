@@ -6,15 +6,8 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 12:48:15 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/08/25 12:54:17 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/08/27 14:54:49 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int ft_atoi(char *s)
-{
-    if (s == NULL)
-        ;// throw_error();
-    ;
-}
