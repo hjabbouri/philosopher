@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 16:23:40 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/08/27 22:59:33 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/08/28 22:58:03 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ typedef struct  s_philo
 {
     int             id_philo;
     pthread_t       thread;
-    int             fork[2];
+    // pthread_mutex_t mutex;
+    int             fork_id[2];
     time_t          last_meal;
-    pthread_mutex_t mutex;
-    int             state;
+    char            state;//[1]
 }   t_philo;
 
 typedef struct  s_table
@@ -45,15 +45,19 @@ typedef struct  s_table
     time_t          time_to_eat;
     time_t          time_to_sleep;
     int             nbr_philo_must_eat;
-    int             *t_forks;
+    pthread_mutex_t *mut_forks;
+    pthread_mutex_t mut_print;
+    //mutex print
     t_philo         *philos;
 }   t_table;
 
 
 int     check_arguments(int ac);
-int     parsing_argument(int ac, char **av, t_table *table);
-t_table *init_table(int ac, char **av);
-t_table *init_philo(int ac, char **av, t_table *t);
+t_table *parsing_argument(int ac, char **av);
 void    write_error(char *str);
+int     ft_atoi(char *av);
+// void    *routine(int id);//t_philo *p);
+// void    *routine(int id);//
+void    *routine(void *id);//t_philo *p)
 
 #endif
