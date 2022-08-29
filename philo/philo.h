@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 16:23:40 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/08/28 22:58:03 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/08/29 21:00:06 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # define MALLOC_ERR "Memory allocation Error\n"
 # define THREAD_CREAT_ERR "Thread creation Failed\n"
 
+typedef struct s_table t_table;
+
 typedef struct  s_philo
 {
     int             id_philo;
@@ -36,6 +38,8 @@ typedef struct  s_philo
     int             fork_id[2];
     time_t          last_meal;
     char            state;//[1]
+    int             nbr_eat;
+    t_table         *table;
 }   t_philo;
 
 typedef struct  s_table
@@ -44,6 +48,7 @@ typedef struct  s_table
     time_t          time_to_die;
     time_t          time_to_eat;
     time_t          time_to_sleep;
+    time_t          time_stamp;
     int             nbr_philo_must_eat;
     pthread_mutex_t *mut_forks;
     pthread_mutex_t mut_print;
@@ -51,13 +56,12 @@ typedef struct  s_table
     t_philo         *philos;
 }   t_table;
 
-
 int     check_arguments(int ac);
 t_table *parsing_argument(int ac, char **av);
 void    write_error(char *str);
 int     ft_atoi(char *av);
-// void    *routine(int id);//t_philo *p);
-// void    *routine(int id);//
-void    *routine(void *id);//t_philo *p)
+void    *routine(void *arg);
+time_t  get_time_now(void);
+void    print(t_table *t, t_philo *p, char *str, int id);
 
 #endif
