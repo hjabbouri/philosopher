@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 16:23:40 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/08/29 21:00:06 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/08/30 21:09:06 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct  s_table
     time_t          time_to_die;
     time_t          time_to_eat;
     time_t          time_to_sleep;
-    time_t          time_stamp;
+    time_t          start_time;
     int             nbr_philo_must_eat;
     pthread_mutex_t *mut_forks;
     pthread_mutex_t mut_print;
@@ -62,6 +62,7 @@ void    write_error(char *str);
 int     ft_atoi(char *av);
 void    *routine(void *arg);
 time_t  get_time_now(void);
-void    print(t_table *t, t_philo *p, char *str, int id);
+void    print(t_philo *p, char *str);
+void    ft_usleep(time_t delai);
 
 #endif

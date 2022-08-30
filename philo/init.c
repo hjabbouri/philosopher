@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 20:57:33 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/08/29 20:50:10 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/08/30 17:41:26 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ static int thread_create(t_table *t)
     {
         if (pthread_create(&t->philos[i].thread, NULL, &routine, &t->philos[i]) != 0)
             return (1);
+        ;
+        usleep(500);//sleep for a while
+        ;
         i++;
     }
     i = 0;
@@ -72,7 +75,7 @@ static t_table *init_philo(t_table *t)
             t->philos[i].fork_id[1] = i;
         }
         if (i == 0 || i == t->num_philo - 1)
-            t->philos[i].fork_id[1] = t->num_philo - 1;
+            t->philos[i].fork_id[(i == 0)] = t->num_philo - 1 - (i != 0);
         t->philos[i].last_meal = 0;////////////////// time to modifie on strat simulation
         t->philos[i].state = 'n';//[0]
         t->philos[i].nbr_eat = 0;
@@ -96,7 +99,7 @@ static t_table *init_table(int ac, char **av)
     t->time_to_die = ft_atoi(av[2]);
     t->time_to_eat = ft_atoi(av[3]);
     t->time_to_sleep = ft_atoi(av[4]);
-    t->time_stamp = get_time_now();
+    t->start_time = get_time_now();
     t->nbr_philo_must_eat = -2;
     if (ac == 6)
         t->nbr_philo_must_eat = ft_atoi(av[5]);
@@ -109,8 +112,8 @@ static t_table *init_table(int ac, char **av)
     if (t->mut_forks == NULL || t->philos == NULL)
         return (free(t->mut_forks), free(t->philos), write_error(MALLOC_ERR), NULL);
     t = init_philo(t);
-    if (t == NULL)
-        return (NULL);
+    if (t == NULL)//////////
+        return (NULL);//////////
     return (t);
 }
 
