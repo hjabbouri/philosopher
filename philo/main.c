@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 14:51:38 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/08/29 15:22:10 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/01 16:48:34 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static void on_free(t_table *t)
         i++;
     }
     pthread_mutex_destroy(&t->mut_print);//error case
+    // pthread_mutex_destroy(&t->death_mutx);//error case
     free(t->philos);
     free(t->mut_forks);
     free(t);

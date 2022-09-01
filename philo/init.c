@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 20:57:33 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/08/30 17:41:26 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:42:34by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static int mutex_init(t_table *t)
     }
     if (pthread_mutex_init(&t->mut_print, NULL) != 0)
         return (1);
+    // if (pthread_mutex_init(&t->death_mutx, NULL) != 0)
+    //     return (1);
     return (0);
 }
 
@@ -39,13 +41,17 @@ static int thread_create(t_table *t)
 {
     int i;
 
+    if (mutex_init(t) == 1)
+        return (0);
     i = 0;
     while (i < t->num_philo)
     {
-        if (pthread_create(&t->philos[i].thread, NULL, &routine, &t->philos[i]) != 0)
+        if (pthread_create(&(t->philos[i].thread), NULL, &routine, &(t->philos[i])) != 0)
             return (1);
         ;
-        usleep(500);//sleep for a while
+        // if (i % 2 == 0)
+        // usleep(10 * 1000);
+        // usleep(500);//sleep for a while
         ;
         i++;
     }
@@ -55,7 +61,7 @@ static int thread_create(t_table *t)
         pthread_join(t->philos[i].thread, NULL);
         i++;
     }
-    return (mutex_init(t));
+    return (0);
 }
 
 //full
@@ -77,7 +83,6 @@ static t_table *init_philo(t_table *t)
         if (i == 0 || i == t->num_philo - 1)
             t->philos[i].fork_id[(i == 0)] = t->num_philo - 1 - (i != 0);
         t->philos[i].last_meal = 0;////////////////// time to modifie on strat simulation
-        t->philos[i].state = 'n';//[0]
         t->philos[i].nbr_eat = 0;
         t->philos[i].table = t;
         i++;
@@ -101,17 +106,18 @@ static t_table *init_table(int ac, char **av)
     t->time_to_sleep = ft_atoi(av[4]);
     t->start_time = get_time_now();
     t->nbr_philo_must_eat = -2;
+    t->death = 0;////////////
     if (ac == 6)
         t->nbr_philo_must_eat = ft_atoi(av[5]);
     if (t->num_philo == -1 || t->time_to_die == -1 || \
             t->time_to_eat == -1 || t->time_to_sleep == -1 || \
             t->nbr_philo_must_eat == -1)
         return (write_error(ARG_ERR), NULL);
-    t->mut_forks = malloc(sizeof(int) * t->num_philo);
+    t->mut_forks = malloc(sizeof(pthread_mutex_t) * t->num_philo);
     t->philos = malloc(sizeof(t_philo) * t->num_philo);
     if (t->mut_forks == NULL || t->philos == NULL)
         return (free(t->mut_forks), free(t->philos), write_error(MALLOC_ERR), NULL);
-    t = init_philo(t);
+    t = init_philo(t);/////////return init_philo
     if (t == NULL)//////////
         return (NULL);//////////
     return (t);
