@@ -17,13 +17,6 @@ static int mutex_init(t_table *t)
     int i;
 
     i = 0;
-    // don t think i need it
-    // while (i < t->num_philo - 1)
-    // {
-    //     if (pthread_mutex_init(t->philos[i].mutex, NULL) != 0)
-    //         return (1);
-    //     i++;
-    // }
     while (i < t->num_philo)
     {
         if (pthread_mutex_init(&t->mut_forks[i], NULL) != 0)
@@ -32,8 +25,6 @@ static int mutex_init(t_table *t)
     }
     if (pthread_mutex_init(&t->mut_print, NULL) != 0)
         return (1);
-    // if (pthread_mutex_init(&t->death_mutx, NULL) != 0)
-    //     return (1);
     return (0);
 }
 
@@ -42,25 +33,42 @@ static int thread_create(t_table *t)
     int i;
 
     if (mutex_init(t) == 1)
-        return (0);
+        return (1);
     i = 0;
     while (i < t->num_philo)
     {
-        if (pthread_create(&(t->philos[i].thread), NULL, &routine, &(t->philos[i])) != 0)
+        // if (pthread_create(&(t->philos[i].thread), NULL, &routine, &(t->philos[i])) != 0)
+        if (pthread_create(&(t->philos[i].thread), NULL, &test_routine, &(t->philos[i])) != 0)
             return (1);
-        ;
-        // if (i % 2 == 0)
-        // usleep(10 * 1000);
-        // usleep(500);//sleep for a while
-        ;
         i++;
     }
     i = 0;
     while (i < t->num_philo)
     {
-        pthread_join(t->philos[i].thread, NULL);
+        // pthread_join(t->philos[i].thread, NULL);
+        pthread_detach(t->philos[i].thread);
         i++;
     }
+    ;
+    usleep(100 * 1000);
+    // while (get_time_now() < t->start_time)
+    //     continue ;
+    i = 0;
+    while (true)
+    {
+        // if (t->death == 1)
+        //     break ;
+        if ((get_time_now() - t->philos[i].last_meal > t->time_to_die))// && (t->philos[i].nbr_eat == -2 || t->philos[i].nbr_eat != 0))// && t->death != 1)
+        {
+            pthread_mutex_lock(&t->mut_print);
+            print(&t->philos[i], "died");
+            // return (0);
+            break ;
+        }
+        ;
+        i = (i + 1) % t->num_philo;
+    }
+    ;
     return (0);
 }
 
@@ -83,7 +91,7 @@ static t_table *init_philo(t_table *t)
         if (i == 0 || i == t->num_philo - 1)
             t->philos[i].fork_id[(i == 0)] = t->num_philo - 1 - (i != 0);
         t->philos[i].last_meal = 0;////////////////// time to modifie on strat simulation
-        t->philos[i].nbr_eat = 0;
+        t->philos[i].nbr_eat = t->nbr_philo_must_eat;//0;///////
         t->philos[i].table = t;
         i++;
     }

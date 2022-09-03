@@ -6,7 +6,7 @@
 #    By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/24 18:51:45 by hjabbour          #+#    #+#              #
-#    Updated: 2022/08/28 18:56:16 by hjabbour         ###   ########.fr        #
+#    Updated: 2022/09/01 19:19:24 by hjabbour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = philo
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror#-pthread 
+CFLAGS = -Wall -Wextra -Werror -pthread 
 
 INC = philo.h
 

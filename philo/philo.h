@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 16:23:40 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/01 16:48:40 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/02 15:12:38 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,9 @@ typedef struct  s_philo
 {
     int             id_philo;
     pthread_t       thread;
-    // pthread_mutex_t mutex;
     int             fork_id[2];
     time_t          last_meal;
     int             nbr_eat;
-    // int             *turn;
     t_table         *table;
 }   t_philo;
 
@@ -52,9 +50,7 @@ typedef struct  s_table
     int             nbr_philo_must_eat;
     pthread_mutex_t *mut_forks;
     pthread_mutex_t mut_print;
-    // pthread_mutex_t death_mutx;
     int             death;
-    //mutex print
     t_philo         *philos;
 }   t_table;
 
@@ -66,5 +62,7 @@ void    *routine(void *arg);
 time_t  get_time_now(void);
 void    print(t_philo *p, char *str);
 void    ft_usleep(time_t delai);
+
+void    *test_routine(void *arg);
 
 #endif

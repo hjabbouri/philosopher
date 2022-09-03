@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:00:20 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/01 17:11:32 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/02 22:34:19 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,15 +74,14 @@ static void is_thinking(t_philo *p)
     print(p, "is thinking");
     pthread_mutex_unlock(&p->table->mut_print);
     //last meal time update
-    printf("%ld | %ld\n", get_time_now(), p->last_meal);
     if (get_time_now() - p->last_meal <= p->table->time_to_eat)
     {
         // pthread_mutex_lock(&p->table->death_mutx);
         p->table->death = 1;
         // pthread_mutex_unlock(&p->table->death_mutx);
-        pthread_mutex_lock(&p->table->mut_print);
-        print(p, "died");
-        pthread_mutex_unlock(&p->table->mut_print);
+        // pthread_mutex_lock(&p->table->mut_print);
+        // print(p, "died");
+        // pthread_mutex_unlock(&p->table->mut_print);
     }
 }
 
@@ -91,14 +90,29 @@ void    *routine(void   *arg)
     t_philo *p;
 
     p = (t_philo *)arg;
-    while (p->table->death != 1)//no one dies
+    // while (p->table->death != 1)//no one dies
+    if (p->table->num_philo == 1)
+    {
+        pthread_mutex_lock(&p->table->mut_forks[0]);
+        pthread_mutex_lock(&p->table->mut_print);
+        print(p, "has taken a fork");
+        pthread_mutex_unlock(&p->table->mut_print);
+        ft_usleep(p->table->time_to_die);
+        pthread_mutex_lock(&p->table->mut_print);
+        print(p, "died");
+        p->table->death = 1;
+        pthread_mutex_unlock(&p->table->mut_print);
+        return (0);
+        ;
+    }
+    while (true && p->nbr_eat != 0)//no one dies
     {
         // if (p->id_philo + p->increas % 2 == 0)// || p.bool == true)
         is_eating(p);
         is_sleeping(p);
         is_thinking(p);
+        if (p->table->nbr_philo_must_eat != -2)
+            p->nbr_eat--;
     }
-    return 0;
+    return (0);
 }
-
-//c s x

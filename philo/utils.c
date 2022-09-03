@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 20:16:24 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/08/30 21:08:30 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/03 16:47:32 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,17 @@ void    print(t_philo *p, char *str)
 {
     // write();
     // should i get the time every time
-    printf("%ld %d %s\n", get_time_now() - p->table->start_time, p->id_philo + 1, str);
-    usleep(30 * 1000);
+    printf("%ld %d %s\n", (get_time_now() - p->table->start_time), p->id_philo + 1, str);
+    // usleep(1 * 1000);
 }
 
 void    ft_usleep(time_t delai)
 {
-    time_t  now;
     time_t  end;
 
-    now = get_time_now();
     end = get_time_now() + delai;
-    while (now < end)
+    while (get_time_now() < end)
     {
-        now = get_time_now();
+        usleep(100);
     }
 }
