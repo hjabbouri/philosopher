@@ -25,6 +25,13 @@ static int mutex_init(t_table *t)
     }
     if (pthread_mutex_init(&t->mut_print, NULL) != 0)
         return (1);
+    i = 0;
+    while (i < t->num_philo)
+    {
+        if (pthread_mutex_init(&t->philos[i].mut_last_meal, NULL) != 0)
+            return (1);
+        i++;
+    }
     return (0);
 }
 
@@ -35,6 +42,7 @@ static int thread_create(t_table *t)
     if (mutex_init(t) == 1)
         return (1);
     i = 0;
+    t->start_time = get_time_now();
     while (i < t->num_philo)
     {
         // if (pthread_create(&(t->philos[i].thread), NULL, &routine, &(t->philos[i])) != 0)
@@ -49,26 +57,21 @@ static int thread_create(t_table *t)
         pthread_detach(t->philos[i].thread);
         i++;
     }
-    ;
-    usleep(100 * 1000);
+    ft_usleep(t->time_to_die);
     // while (get_time_now() < t->start_time)
     //     continue ;
     i = 0;
     while (true)
     {
-        // if (t->death == 1)
-        //     break ;
-        if ((get_time_now() - t->philos[i].last_meal > t->time_to_die))// && (t->philos[i].nbr_eat == -2 || t->philos[i].nbr_eat != 0))// && t->death != 1)
+        if ((get_time_now() - t->philos[i].last_meal) > t->time_to_die)// && (t->philos[i].nbr_eat == -2 || t->philos[i].nbr_eat != 0))// && t->death != 1)
         {
             pthread_mutex_lock(&t->mut_print);
-            print(&t->philos[i], "died");
-            // return (0);
+            print(&t->philos[i]+1, "died");
             break ;
         }
-        ;
         i = (i + 1) % t->num_philo;
     }
-    ;
+    usleep(200*1000);
     return (0);
 }
 
@@ -76,11 +79,15 @@ static int thread_create(t_table *t)
 static t_table *init_philo(t_table *t)
 {
     int     i;
+    int     *turn;
 
     i = 0;
+    turn = malloc(4);
+    *turn = 0;
     while (i < t->num_philo)
     {
         t->philos[i].id_philo = i;
+        t->philos[i].turn = turn;
         t->philos[i].fork_id[0] = i - (i != 0);
         t->philos[i].fork_id[1] = i % t->num_philo;
         if (i % 2 != 0)
@@ -112,7 +119,7 @@ static t_table *init_table(int ac, char **av)
     t->time_to_die = ft_atoi(av[2]);
     t->time_to_eat = ft_atoi(av[3]);
     t->time_to_sleep = ft_atoi(av[4]);
-    t->start_time = get_time_now();
+    // t->start_time = get_time_now();//not a the start of the assigne but hust befor the thread start
     t->nbr_philo_must_eat = -2;
     t->death = 0;////////////
     if (ac == 6)

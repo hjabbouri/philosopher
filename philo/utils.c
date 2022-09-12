@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 20:16:24 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/03 16:47:32 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/12 23:02:41 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ void    print(t_philo *p, char *str)
 {
     // write();
     // should i get the time every time
+    // printf("%ld %ld %ld %s\n", get_time_now(),p->table->start_time, (get_time_now() - p->table->start_time), str);
+    // usleep(30);
+    // printf("print : %ld id: %d %s\n", get_time_now() - p->last_meal,p->id_philo+1,str);
+    // if (get_time_now() - p->last_meal >= p->table->time_to_die)
+    //     return ;
     printf("%ld %d %s\n", (get_time_now() - p->table->start_time), p->id_philo + 1, str);
     // usleep(1 * 1000);
 }
@@ -47,6 +52,9 @@ void    ft_usleep(time_t delai)
     end = get_time_now() + delai;
     while (get_time_now() < end)
     {
-        usleep(100);
+        usleep(500);
     }
 }
+
+
+//simulation delai before dtart reduce time usleep
