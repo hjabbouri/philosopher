@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 20:57:33 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/13 16:36:41 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/13 20:38:04 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,27 @@ static int	mutex_init(t_table *t)
 	return (0);
 }
 
+static void	main_thread(t_table *t)
+{
+	int	i;
+
+	i = 0;
+	while (true)
+	{
+		if ((get_time_now() - t->philos[i].last_meal) > t->time_to_die)
+		{
+			pthread_mutex_lock(&t->mut_print);
+			if (t->philos[i].nbr_eat == 0)
+				break ;
+			print(&t->philos[i], "died");
+			break ;
+		}
+		i = (i + 1) % t->num_philo;
+		usleep(500);
+	}
+	usleep(200 * 1000);
+}
+
 static int	thread_create(t_table *t)
 {
 	int	i;
@@ -38,8 +59,8 @@ static int	thread_create(t_table *t)
 	t->start_time = get_time_now();
 	while (i < t->num_philo)
 	{
-		// if (pthread_create(&(t->philos[i].thread), NULL, &routine, &(t->philos[i])) != 0)
-		if (pthread_create(&(t->philos[i].thread), NULL, &test_routine, &(t->philos[i])) != 0)
+		if (pthread_create(&(t->philos[i].thread), NULL, &routine, \
+					&(t->philos[i])) != 0)
 			return (1);
 		usleep(500);
 		i++;
@@ -47,23 +68,10 @@ static int	thread_create(t_table *t)
 	i = 0;
 	while (i < t->num_philo)
 	{
-		pthread_detach(t->philos[i].thread);// pthread_join(t->philos[i].thread, NULL);
+		pthread_detach(t->philos[i].thread);
 		i++;
 	}
-	i = 0;
-	while (true)
-	{
-		if ((get_time_now() - t->philos[i].last_meal) > t->time_to_die)
-		{
-			pthread_mutex_lock(&t->mut_print);
-			print(&t->philos[i], "died");
-			// printf("must ate %d\n", t->philos[i].nbr_eat);
-			break ;
-		}
-		i = (i + 1) % t->num_philo;
-		usleep(500);
-	}
-	usleep(200 * 1000);
+	main_thread(t);
 	return (0);
 }
 
@@ -84,8 +92,8 @@ static t_table	*init_philo(t_table *t)
 		}
 		if (i == 0 || i == t->num_philo - 1)
 			t->philos[i].fork_id[(i == 0)] = t->num_philo - 1 - (i != 0);
-		t->philos[i].last_meal = 0;////////////////// time to modifie on strat simulation
-		t->philos[i].nbr_eat = t->nbr_philo_must_eat;//0;///////
+		t->philos[i].last_meal = 0;
+		t->philos[i].nbr_eat = t->nbr_philo_must_eat;
 		t->philos[i].table = t;
 		i++;
 	}
@@ -94,7 +102,7 @@ static t_table	*init_philo(t_table *t)
 	return (t);
 }
 
-static t_table	*init_table(int ac, char **av)
+t_table	*init_table(int ac, char **av)
 {
 	t_table	*t;
 
@@ -105,9 +113,7 @@ static t_table	*init_table(int ac, char **av)
 	t->time_to_die = ft_atoi(av[2]);
 	t->time_to_eat = ft_atoi(av[3]);
 	t->time_to_sleep = ft_atoi(av[4]);
-	// t->start_time = get_time_now();//not a the start of the assigne but hust befor the thread start
 	t->nbr_philo_must_eat = -2;
-	//t->death = 0;////////////
 	if (ac == 6)
 		t->nbr_philo_must_eat = ft_atoi(av[5]);
 	if (t->num_philo == -1 || t->time_to_die == -1 || \
@@ -117,17 +123,8 @@ static t_table	*init_table(int ac, char **av)
 	t->mut_forks = malloc(sizeof(pthread_mutex_t) * t->num_philo);
 	t->philos = malloc(sizeof(t_philo) * t->num_philo);
 	if (t->mut_forks == NULL || t->philos == NULL)
-		return (free(t->mut_forks), free(t->philos), write_error(MALLOC_ERR), NULL);
+		return (free(t->mut_forks), free(t->philos), \
+				write_error(MALLOC_ERR), NULL);
 	t = init_philo(t);
-	return (t);
-}
-
-t_table	*parsing_argument(int ac, char **av)
-{
-	t_table	*t;
-
-	t = init_table(ac, av);
-	if (t == NULL)
-		return (NULL);
 	return (t);
 }

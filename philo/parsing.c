@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 20:13:53 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/13 16:43:50 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/13 20:40:03 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,14 @@ int	check_arguments(int ac)
 	if (ac < 5 || ac > 6)
 		return (write_error(USE_MSG), 0);
 	return (1);
+}
+
+t_table	*parsing_argument(int ac, char **av)
+{
+	t_table	*t;
+
+	t = init_table(ac, av);
+	if (t == NULL)
+		return (NULL);
+	return (t);
 }

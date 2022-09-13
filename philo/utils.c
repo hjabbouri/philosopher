@@ -6,7 +6,7 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 20:16:24 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/13 16:59:59 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/13 20:44:57 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,21 @@ void	ft_usleep(time_t delai)
 	{
 		usleep(500);
 	}
+}
+
+void	on_free(t_table *t)
+{
+	int	i;
+
+	i = 0;
+	while (i < t->num_philo)
+	{
+		if (pthread_mutex_destroy(&t->mut_forks[i]) != 0)
+			break ;
+		i++;
+	}
+	pthread_mutex_destroy(&t->mut_print);
+	free(t->philos);
+	free(t->mut_forks);
+	free(t);
 }
