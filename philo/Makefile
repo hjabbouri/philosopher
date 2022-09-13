@@ -6,7 +6,7 @@
 #    By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/24 18:51:45 by hjabbour          #+#    #+#              #
-#    Updated: 2022/09/01 19:19:24 by hjabbour         ###   ########.fr        #
+#    Updated: 2022/09/13 16:17:24 by hjabbour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,8 +20,7 @@ INC = philo.h
 
 RM = rm -f
 
-SRCS = main.c philo.c init.c parsing.c utils.c routine.c #threads.c mutexes.c\
-	ending.c
+SRCS = main.c philo.c init.c parsing.c utils.c routine.c 
 
 OBJS = ${SRCS:.c=.o}
 

@@ -6,15 +6,12 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 20:13:53 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/01 16:59:32 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/13 16:43:50 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/*
- * work propely with god norm
- * */
 int	ft_atoi(char *av)
 {
 	int		i;
@@ -41,9 +38,9 @@ int	ft_atoi(char *av)
 	return ((int)nbr);
 }
 
-int check_arguments(int ac)
+int	check_arguments(int ac)
 {
-    if (ac < 5 || ac > 6)
-        return (write_error(USE_MSG), 0);
-    return (1);
+	if (ac < 5 || ac > 6)
+		return (write_error(USE_MSG), 0);
+	return (1);
 }

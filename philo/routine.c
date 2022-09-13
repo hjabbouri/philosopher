@@ -6,31 +6,13 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 21:00:20 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/02 22:34:19 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/09/13 16:57:36 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/**
- * eat 
- * sleep
- * think
- */
-
-// static void _forks(int lf, int rf, char c)
-// {
-//     if (c == '1')
-//     {
-//         ;
-//     }
-//     else
-//     {
-//         ;
-//     }
-// }
-
-static void is_sleeping(t_philo *p)
+static void	is_sleeping(t_philo *p)
 {
     time_t  wake_up;
 
