@@ -1,2 +1,4 @@
-# philo
-philo the final version pused on the intra 42
+# Philosopher
+
+Implementing Multithreading concurrent solution for the dining philosophers problem
+by _Edsger Dijkstra_
