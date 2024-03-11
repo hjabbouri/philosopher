@@ -6,13 +6,13 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 20:16:24 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/13 20:44:57 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/10/15 21:59:44 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	write_error(char *str)
+void	on_error(char *str)
 {
 	int	i;
 
@@ -34,8 +34,10 @@ time_t	get_time_now(void)
 
 void	print(t_philo *p, char *str)
 {
+	pthread_mutex_lock(&p->table->mut_print);
 	printf("%ld %d %s\n", (get_time_now() - p->table->start_time), \
 			p->id_philo + 1, str);
+	pthread_mutex_unlock(&p->table->mut_print);
 }
 
 void	ft_usleep(time_t delai)
@@ -61,6 +63,8 @@ void	on_free(t_table *t)
 		i++;
 	}
 	pthread_mutex_destroy(&t->mut_print);
+	pthread_mutex_destroy(&t->mut_eating);
+	pthread_mutex_destroy(&t->mut_last_meal);
 	free(t->philos);
 	free(t->mut_forks);
 	free(t);

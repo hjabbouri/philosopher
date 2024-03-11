@@ -6,11 +6,14 @@
 /*   By: hjabbour <hjabbour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 20:57:33 by hjabbour          #+#    #+#             */
-/*   Updated: 2022/09/13 20:38:04 by hjabbour         ###   ########.fr       */
+/*   Updated: 2022/10/15 21:58:40 by hjabbour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <pthread.h>
+#include <sys/_pthread/_pthread_t.h>
+#include <time.h>
 
 static int	mutex_init(t_table *t)
 {
@@ -25,22 +28,34 @@ static int	mutex_init(t_table *t)
 	}
 	if (pthread_mutex_init(&t->mut_print, NULL) != 0)
 		return (1);
+	if (pthread_mutex_init(&t->mut_eating, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&t->mut_last_meal, NULL) != 0)
+		return (1);
 	return (0);
 }
 
 static void	main_thread(t_table *t)
 {
-	int	i;
+	int		i;
+	time_t	time;
 
 	i = 0;
 	while (true)
 	{
-		if ((get_time_now() - t->philos[i].last_meal) > t->time_to_die)
+		pthread_mutex_lock(&t->mut_last_meal);
+		time = get_time_now() - t->philos[i].last_meal;
+		pthread_mutex_unlock(&t->mut_last_meal);
+		if (time > t->time_to_die)
 		{
 			pthread_mutex_lock(&t->mut_print);
-			if (t->philos[i].nbr_eat == 0)
-				break ;
-			print(&t->philos[i], "died");
+			printf("%ld %d died\n", (get_time_now() - t->start_time), \
+				t->philos[i].id_philo + 1);
+			break ;
+		}
+		if (t->eating == t->num_philo)
+		{
+			pthread_mutex_lock(&t->mut_print);
 			break ;
 		}
 		i = (i + 1) % t->num_philo;
@@ -60,7 +75,7 @@ static int	thread_create(t_table *t)
 	while (i < t->num_philo)
 	{
 		if (pthread_create(&(t->philos[i].thread), NULL, &routine, \
-					&(t->philos[i])) != 0)
+			&(t->philos[i])) != 0)
 			return (1);
 		usleep(500);
 		i++;
@@ -93,7 +108,7 @@ static t_table	*init_philo(t_table *t)
 		if (i == 0 || i == t->num_philo - 1)
 			t->philos[i].fork_id[(i == 0)] = t->num_philo - 1 - (i != 0);
 		t->philos[i].last_meal = 0;
-		t->philos[i].nbr_eat = t->nbr_philo_must_eat;
+		t->philos[i].nbr_eat = t->must_eat;
 		t->philos[i].table = t;
 		i++;
 	}
@@ -108,23 +123,24 @@ t_table	*init_table(int ac, char **av)
 
 	t = malloc(sizeof(t_table));
 	if (t == NULL)
-		return (write_error(MALLOC_ERR), NULL);
+		return (on_error(ALOC_ERR), NULL);
 	t->num_philo = ft_atoi(av[1]);
 	t->time_to_die = ft_atoi(av[2]);
 	t->time_to_eat = ft_atoi(av[3]);
 	t->time_to_sleep = ft_atoi(av[4]);
-	t->nbr_philo_must_eat = -2;
+	t->must_eat = -2;
 	if (ac == 6)
-		t->nbr_philo_must_eat = ft_atoi(av[5]);
+		t->must_eat = ft_atoi(av[5]);
 	if (t->num_philo == -1 || t->time_to_die == -1 || \
-			t->time_to_eat == -1 || t->time_to_sleep == -1 || \
-			t->nbr_philo_must_eat == -1)
-		return (write_error(ARG_ERR), NULL);
+			t->time_to_eat == -1 || t->time_to_sleep == -1 || t->must_eat == -1)
+		return (on_error(ARG_ERR), free(t), NULL);
 	t->mut_forks = malloc(sizeof(pthread_mutex_t) * t->num_philo);
 	t->philos = malloc(sizeof(t_philo) * t->num_philo);
 	if (t->mut_forks == NULL || t->philos == NULL)
-		return (free(t->mut_forks), free(t->philos), \
-				write_error(MALLOC_ERR), NULL);
+		return (free(t->mut_forks), free(t->philos), on_error(ALOC_ERR), NULL);
+	t->eating = 0;
 	t = init_philo(t);
+	if (t == NULL)
+		return (free(t->mut_forks), free(t->philos), NULL);
 	return (t);
 }
